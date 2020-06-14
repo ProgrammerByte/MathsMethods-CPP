@@ -18,4 +18,5 @@ My first C++ program. This program contains a variety of mathematical methods (s
 -tanh  
   
 The constants PI and e are also defined within the code.  
+All non exact calculations (for example ln, sin, and sinh) include an iterations parameter which determines the accuracy of the approximated calculation. A greater iterations parameter will increase the accuracy as well as the time taken to carry out the calculation.  
 The program itself does nothing when executed as the main method only contains commented out lines of test code.
