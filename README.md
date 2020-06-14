@@ -1,12 +1,14 @@
 # MathsMethods-CPP
 My first C++ program. This program contains a variety of mathematical methods (some of which are derived from their respective Maclaurin series) including:  
 -factorial  
+-nPr and nCr formulae  
 -sumX (between start and finish value)  
 -binomial expansion  
 -power (separate methods for when the exponent is an integer or a double)  
 -root (nth integer root)  
--ln  
+-log and ln (better optimised as of 14/16/2020 compared to previous version)  
 -fraction simplifier  
+-Quadratic equation analyser (determines solutions and stationary point)  
 -exp (exp's Maclaurin series is used for other methods)  
 -sin (all angles are in radians)  
 -cos  
