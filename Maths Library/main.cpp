@@ -17,6 +17,14 @@ int factorial(int num) {
     return result;
 }
 
+int nPr(int n, int r) {
+    return factorial(n) / factorial(n - r);
+}
+
+int nCr(int n, int r) {
+    return nPr(n, r) / factorial(r);
+}
+
 int sumX(int start, int end) {
     int result = 0;
     for (int i = start; i <= end; i++) {
@@ -56,10 +64,13 @@ double intPow(double base, int exponent) { //for integer exponents
 }
 
 double root(double value, int exponent, int iterations) { //in this case exponent refers to the nth root
+    if (value <= 0) {
+        return 0;
+    }
     double x = value - 1;
     int multiplier = 1;
     int exponentModulus = (exponent > 0) ? exponent:-exponent;
-    while (x < -1 || x > 1) {
+    while (x > 1) {
         multiplier *= 10;
         x = ((double)value / (intPow(multiplier, exponentModulus))) - 1;
     }
@@ -73,10 +84,11 @@ double root(double value, int exponent, int iterations) { //in this case exponen
 }
 
 double ln(double value, int iterations) { //value > 0 is assumed
-    int multiplier = 1;
+    int lneCount = 0; //uses the rule ln(ab) = ln(a) + ln(b) hence ln(ea) = 1 + ln(a)
     while (value > 2) { //until valid
-        multiplier *= 2;
-        value = root(value, 2, iterations);
+        lneCount += 1;
+        //value = root(value, 2, iterations); this was very inefficient compared to the new rule
+        value /= e;
     }
 
     double result = 0;
@@ -88,7 +100,11 @@ double ln(double value, int iterations) { //value > 0 is assumed
             result += (double)currentX / i;
         }
     }
-    return result * multiplier;
+    return result + lneCount;
+}
+
+double log(double base, double value, int iterations) {
+    return (double)ln(value, iterations) / ln(base, iterations);
 }
 
 void simplifyFraction(int numerator, int denominator) {
@@ -113,6 +129,45 @@ void simplifyFraction(int numerator, int denominator) {
             }
         }
         cout << numerator << " / " << denominator << endl;
+    }
+}
+
+///the following solves a quadratic equation and determines whether a stationary point is present
+void quadraticEquation(double a, double b, double c) { //of the form ax^2 + bx + c = 0
+    if (a == 0) {
+        cout << "Not a valid quadratic equation!" << endl;
+    }
+    else {
+        cout << "The quadratic equation " << a << "x^2 + " << b << "x + " << c << " = 0 has:" << endl;
+        double discriminant = b * b - 4 * a * c;
+        if (discriminant < 0) { //calculates solutions using quadratic formula
+            cout << "No real solutions!" << endl;
+        }
+        else {
+            double solution = -b / (2 * a);
+            if (discriminant == 0) {
+                cout << "One solution at x = " << solution << endl;
+            }
+            else {
+                discriminant = root(discriminant, 2, 1000000) / (2 * a);
+                cout << "Two solutions at x = " << solution + discriminant << ", and at x = " << solution - discriminant << endl;
+            }
+        }
+
+        //if ax^2 + bx + c = 0 then 2ax + b = 0 hence x = -b / 2a
+        if (a == 0) {
+            cout << "No stationary points!" << endl;
+        }
+        else {
+            double xCoord = -b / (2 * a); //this value was calculated previously however for a different purpose
+            double yCoord = a * xCoord * xCoord + b * xCoord + c;
+            if (a < 0) {
+                cout << "A maximum point at x = " << xCoord << ", and y = " << yCoord << endl;
+            }
+            else {
+                cout << "A minimum point at x = " << xCoord << ", and y = " << yCoord << endl;
+            }
+        }
     }
 }
 
@@ -176,14 +231,22 @@ double tanh(double x, int iterations) {
 
 //base^exponent = e^exponent*ln(base)
 double doublePow(double base, double exponent, int iterations) { //when the exponent is a decimal value
+    if (base == 0) {
+        return 0;
+    }
+    else if (exponent == 0) { //prevents unnecessary operations
+        return 1;
+    }
     return calcExp(exponent * ln(base, iterations), iterations);
 }
 
 int main() {
     cout << std::setprecision(10);
 
-    //the following are all test lines
+    //the following are all test lines - all tests have been successful!
     //cout << factorial(5) << endl;
+    //cout << nPr(10, 5) << endl;
+    //cout << nCr(10, 5) << endl;
     //cout << sumX(10, 100) << endl;
     //cout << intPow(4, -5) << endl;
     //cout << (double)binomialExpansion(0.5, 0.5, 10) << endl;
@@ -191,6 +254,7 @@ int main() {
     //cout << root(1564, -7, 10000000) << endl; //many iterations are performed to give a very high level of accuracy
 
     //simplifyFraction(intPow(2, 5), intPow(2, 8));
+    //quadraticEquation(-1, 4, 1);
 
     //cout << calcExp(5.6, 10000) << endl;
     //cout << sin(-PI / 2, 1000000) << endl;
@@ -202,6 +266,10 @@ int main() {
 
     //cout << ln(50 * e, 1000000) << endl;
 
+    //cout << log(1294.192384, 193.122465, 1000000) << endl;
+
     //cout << doublePow(25, 0.5, 1000000) << endl;
+    //cout << doublePow(PI, e, 1000000) << endl;
+
     return 0;
 }
