@@ -251,7 +251,6 @@ double arcTanh(double x, int iterations) {// -1 < x < 1
     }
 }
 
-//uses the formula from https://math.stackexchange.com/questions/421892/how-to-calc-arc-sine-without-a-calculator
 double iterativeSquareRoot(double currentVal, int iterations, int count) { //this method is very computationally expensive due to the iterative square roots
     int multiplier = 1;
     for (int i = 0; i < count; i++) { //if number is too large then cancellation errors occur (number becomes too large)
