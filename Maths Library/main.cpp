@@ -64,7 +64,7 @@ double intPow(double base, int exponent) { //for integer exponents
 }
 
 double root(double value, int exponent, int iterations) { //in this case exponent refers to the nth root
-    if (value <= 0) {
+    if (value <= 0) { //if number is invalid
         return 0;
     }
     double x = value - 1;
@@ -229,6 +229,63 @@ double tanh(double x, int iterations) {
     return (double)sinh(x, iterations) / cosh(x, iterations);
 }
 
+double arcSinh(double x, int iterations) { //all x
+    return ln(x + root(x * x + 1, 2, iterations), iterations);
+}
+
+double arcCosh(double x, int iterations) { //has two solutions, 2nd solution is the negative of the returned value. Only works when x >= 1.
+    if (x >= 1) {
+        return ln(x + root(x * x - 1, 2, iterations), iterations);
+    }
+    else {
+        return -1000000; //invalid
+    }
+}
+
+double arcTanh(double x, int iterations) {// -1 < x < 1
+    if (x > -1 && x < 1) {
+        return 0.5 * ln((x + 1) / (1 - x), iterations);
+    }
+    else {
+        return -1000000; //invalid
+    }
+}
+
+//uses the formula from https://math.stackexchange.com/questions/421892/how-to-calc-arc-sine-without-a-calculator
+double iterativeSquareRoot(double currentVal, int iterations, int count) { //this method is very computationally expensive due to the iterative square roots
+    int multiplier = 1;
+    for (int i = 0; i < count; i++) { //if number is too large then cancellation errors occur (number becomes too large)
+        multiplier *= 2;
+        currentVal = (1 - root(1 - currentVal, 2, iterations)) / 2;
+    }
+    return multiplier * root(currentVal, 2, iterations);
+}
+
+double arcSin(double x, int iterations) {
+    double result = iterativeSquareRoot(x * x, iterations, 6);
+    if (x >= 0) {
+        return result;
+    }
+    else {
+        return -result;
+    }
+}
+
+double arcCos(double x, int iterations) {
+    return 2 * iterativeSquareRoot((1 - x) / 2, iterations, 5);
+}
+
+double arcTan(double x, int iterations) {
+    double tanSquared = x * x;
+    double result = iterativeSquareRoot(tanSquared / (1 + tanSquared), iterations, 6);
+    if (result >= 0) {
+        return result;
+    }
+    else {
+        return -result;
+    }
+}
+
 //base^exponent = e^exponent*ln(base)
 double doublePow(double base, double exponent, int iterations) { //when the exponent is a decimal value
     if (base == 0) {
@@ -238,6 +295,14 @@ double doublePow(double base, double exponent, int iterations) { //when the expo
         return 1;
     }
     return calcExp(exponent * ln(base, iterations), iterations);
+}
+
+double toRadians(double degrees) {
+    return (degrees * PI) / 180;
+}
+
+double toDegrees(double radians) {
+    return (radians * 180) / PI;
 }
 
 int main() {
@@ -263,6 +328,14 @@ int main() {
     //cout << sinh(7 * PI, 1000000) << endl;
     //cout << cosh(-PI, 1000000) << endl;
     //cout << tanh(-15, 1000000) << endl;
+    //cout << arcSinh(-45.6, 1000000) << endl;
+    //cout << arcCosh(17.2, 1000000) << endl;
+   // cout << arcTanh(-0.999999, 1000000) << endl;
+    //cout << arcSin(-100, 1000000) << endl;
+    //cout << arcCos(0.2, 1000000) << endl;
+    //cout << arcTan(12, 1000000) << endl;
+
+    //cout << toRadians(69.43) << endl;
 
     //cout << ln(50 * e, 1000000) << endl;
 
